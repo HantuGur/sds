@@ -174,11 +174,68 @@ function openLightbox(src, caption) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') remove(); }, { once: true });
 }
 
-// ============ WHATSAPP ============
-function openWA() {
-  const phone = '6281312345678'; // placeholder — update with real number
-  const msg = encodeURIComponent('Halo SEATAP KOPITIAM! Saya ingin bertanya mengenai...');
-  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+// ============ BRANCH DATA ============
+const branches = [
+  {
+    name: 'Cibubur',
+    phone: '6281195315600', // +62 811-953-156
+    msg: 'Halo SEATAP Kopitiam Cibubur! Saya ingin reservasi/bertanya tentang...'
+  },
+  {
+    name: 'Cipayung',
+    phone: '628119957589', // 0811-995-7589
+    msg: 'Halo SEATAP Kopitiam Cipayung! Saya ingin reservasi/bertanya tentang...'
+  },
+  {
+    name: 'Taman Mini',
+    phone: '6281195315600', // same until real number provided
+    msg: 'Halo SEATAP Tea & Sky Taman Mini! Saya ingin reservasi/bertanya tentang...'
+  }
+];
+
+function openWA() { openWAChooser(); }
+
+function openWABranch(idx) {
+  const b = branches[idx];
+  const url = `https://wa.me/${b.phone}?text=${encodeURIComponent(b.msg)}`;
+  window.open(url, '_blank');
+  closeWAModal();
+}
+
+function openWAChooser() {
+  document.getElementById('wa-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeWAModal() {
+  document.getElementById('wa-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close modal on backdrop click
+document.getElementById('wa-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('wa-modal')) closeWAModal();
+});
+
+// ============ BRANCH TABS ============
+const btabs = document.querySelectorAll('.btab');
+const bpanels = document.querySelectorAll('.bpanel');
+
+btabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const idx = tab.dataset.branch;
+    btabs.forEach(t => t.classList.remove('active'));
+    bpanels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('branch-' + idx).classList.add('active');
+  });
+});
+
+function scrollToBranch(idx) {
+  btabs.forEach(t => t.classList.remove('active'));
+  bpanels.forEach(p => p.classList.remove('active'));
+  btabs[idx].classList.add('active');
+  document.getElementById('branch-' + idx).classList.add('active');
+  document.getElementById('cabang').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ============ WA FAB SHOW/HIDE ============
